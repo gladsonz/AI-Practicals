@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Car Diagnostics — Expert System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --surface: #141414;
+      --surface2: #1c1c1c;
+      --border: rgba(255,255,255,0.07);
+      --accent: #e8421a;
+      --accent2: #f97316;
+      --text: #f0ede8;
+      --muted: rgba(240,237,232,0.45);
+      --faint: rgba(240,237,232,0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse 80% 40% at 50% 0%, rgba(232,66,26,0.08) 0%, transparent 60%);
+    }
+
+    /* ─── HEADER ─── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(13,13,13,0.9);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(232,66,26,0.4);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(232,66,26,0.08);
+    }
+
+    .logo-mark svg { width: 20px; height: 20px; color: var(--accent); }
+
+    .header-text h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .header-text p {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .header-badge {
+      margin-left: auto;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(232,66,26,0.3);
+      padding: 3px 10px;
+      border-radius: 3px;
+      background: rgba(232,66,26,0.06);
+    }
+
+    /* ─── LAYOUT ─── */
+    main {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 48px 20px 80px;
+    }
+
+    /* ─── START SCREEN ─── */
+    #start-screen {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .engine-icon {
+      width: 96px;
+      height: 96px;
+      margin: 0 auto 32px;
+      position: relative;
+    }
+
+    .engine-icon-ring {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 1px solid rgba(232,66,26,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, rgba(232,66,26,0.1) 0%, transparent 70%);
+      animation: pulse-ring 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse-ring {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(232,66,26,0.2); }
+      50% { box-shadow: 0 0 0 12px rgba(232,66,26,0); }
+    }
+
+    .engine-icon svg { width: 48px; height: 48px; color: var(--accent); }
+
+    #start-screen h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      line-height: 1.1;
+    }
+
+    #start-screen p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+      max-width: 420px;
+      margin: 0 auto 36px;
+    }
+
+    .start-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      background: var(--accent);
+      color: white;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 0 24px rgba(232,66,26,0.35);
+    }
+
+    .start-btn:hover {
+      background: #f04d22;
+      box-shadow: 0 0 32px rgba(232,66,26,0.5);
+      transform: translateY(-1px);
+    }
+
+    .features {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    .feature-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.7;
+    }
+
+    /* ─── PROGRESS ─── */
+    #progress-wrap {
+      margin-bottom: 28px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .progress-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .progress-count {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    .progress-track {
+      height: 3px;
+      background: var(--faint);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    #progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      transition: width 0.5s ease;
+    }
+
+    /* ─── QUESTION CARD ─── */
+    .q-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .q-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), transparent);
+    }
+
+    .q-tag {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .q-tag::before {
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .q-text {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .option-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 16px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+      color: rgba(240,237,232,0.75);
+      font-size: 14px;
+      font-family: 'Barlow', sans-serif;
+      font-weight: 500;
+      transition: all 0.18s ease;
+    }
+
+    .option-btn:hover {
+      background: rgba(232,66,26,0.08);
+      border-color: rgba(232,66,26,0.35);
+      color: var(--text);
+      padding-left: 20px;
+    }
+
+    .option-btn.selected {
+      background: rgba(232,66,26,0.12);
+      border-color: rgba(232,66,26,0.6);
+      color: var(--text);
+    }
+
+    .option-indicator {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s;
+    }
+
+    .option-btn.selected .option-indicator {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    .option-btn.selected .option-indicator::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: white;
+    }
+
+    .q-footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .next-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 24px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: all 0.18s;
+    }
+
+    .next-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .next-btn:not(:disabled):hover {
+      background: #f04d22;
+      box-shadow: 0 4px 16px rgba(232,66,26,0.4);
+    }
+
+    /* ─── LOADING ─── */
+    #loading {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--faint);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #loading p {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ─── RESULTS ─── */
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .result-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34,197,94,0.5);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+    .result-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .result-card.primary {
+      border-color: rgba(232,66,26,0.3);
+      box-shadow: 0 0 30px rgba(232,66,26,0.08);
+    }
+
+    .result-card-top {
+      padding: 24px 24px 0;
+    }
+
+    .result-card-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .result-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .result-card-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+      color: var(--text);
+    }
+
+    .sev-badge {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+
+    .sev-low      { background: rgba(34,197,94,0.12);  color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+    .sev-medium   { background: rgba(234,179,8,0.12);  color: #facc15; border: 1px solid rgba(234,179,8,0.25); }
+    .sev-high     { background: rgba(249,115,22,0.12); color: #fb923c; border: 1px solid rgba(249,115,22,0.25); }
+    .sev-critical { background: rgba(239,68,68,0.12);  color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+
+    .result-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+      padding: 0 24px 20px;
+    }
+
+    .conf-block {
+      padding: 0 24px 20px;
+    }
+
+    .conf-meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .conf-track {
+      height: 4px;
+      background: var(--faint);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .conf-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      transition: width 0.7s ease;
+    }
+
+    .fixes-block {
+      background: rgba(0,0,0,0.2);
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+    }
+
+    .fixes-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .fix-item {
+      display: flex;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .fix-item:last-child { border-bottom: none; }
+
+    .fix-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      width: 20px;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+
+    .fix-text {
+      font-size: 13.5px;
+      color: rgba(240,237,232,0.7);
+      line-height: 1.55;
+    }
+
+    .restart-btn {
+      display: block;
+      margin: 28px auto 0;
+      padding: 10px 24px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .restart-btn:hover {
+      border-color: rgba(255,255,255,0.2);
+      color: var(--text);
+    }
+
+    .disclaimer {
+      text-align: center;
+      font-size: 11px;
+      color: rgba(240,237,232,0.2);
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+
+    /* ─── ANIMATION ─── */
+    .fade-in {
+      animation: fadeUp 0.3s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/>
+    </svg>
+  </div>
+  <div class="header-text">
+    <h1>Car Diagnostics</h1>
+    <p>Expert System · Probability Engine</p>
+  </div>
+  <div class="header-badge">v2.0</div>
+</header>
+
+<main>
+
+  <!-- START SCREEN -->
+  <div id="start-screen" class="fade-in">
+    <div class="engine-icon">
+      <div class="engine-icon-ring">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 7h2l2-2h8l2 2h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/>
+          <path d="M7 7v10M17 7v10M10 12h4"/>
+        </svg>
+      </div>
+    </div>
+    <h2>What's wrong<br>with your car?</h2>
+    <p>Answer a few targeted questions and our probability engine will pinpoint your car's issue — no guesswork, no irrelevant questions.</p>
+    <button class="start-btn" onclick="startDiag()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg>
+      Run Diagnostics
+    </button>
+    <div class="features">
+      <div class="feature"><div class="feature-dot"></div>Adaptive questions</div>
+      <div class="feature"><div class="feature-dot"></div>Probability-based scoring</div>
+      <div class="feature"><div class="feature-dot"></div>Actionable fixes</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS BAR -->
+  <div id="progress-wrap" class="hidden">
+    <div class="progress-meta">
+      <span class="progress-label" id="progress-label">Analyzing…</span>
+      <span class="progress-count" id="progress-count">0 / 0</span>
+    </div>
+    <div class="progress-track">
+      <div id="progress-bar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- QUESTION AREA -->
+  <div id="question-area" class="hidden"></div>
+
+  <!-- LOADING -->
+  <div id="loading" class="hidden">
+    <div class="spinner"></div>
+    <p>Processing…</p>
+  </div>
+
+  <!-- RESULTS AREA -->
+  <div id="results-area" class="hidden"></div>
+
+</main>
+
+<script>
+  let selectedAnswer = null;
+
+  async function startDiag() {
+    document.getElementById('start-screen').classList.add('hidden');
+    showLoading();
+    const res = await fetch('/api/start', { method: 'POST' });
+    const data = await res.json();
+    hideLoading();
+    document.getElementById('progress-wrap').classList.remove('hidden');
+    renderQuestion(data.question, { asked: 0, total: 1 });
+  }
+
+  function renderQuestion(q, progress) {
+    selectedAnswer = null;
+    const area = document.getElementById('question-area');
+    area.classList.remove('hidden');
+
+    if (progress) {
+      const pct = progress.total > 0 ? Math.round((progress.asked / progress.total) * 100) : 10;
+      document.getElementById('progress-bar').style.width = pct + '%';
+      document.getElementById('progress-label').textContent = 'Narrowing diagnosis…';
+      document.getElementById('progress-count').textContent = `${progress.asked} / ${progress.total}`;
+    }
+
+    area.innerHTML = `
+      <div class="q-card fade-in">
+        <div class="q-tag">Diagnostic Question</div>
+        <div class="q-text">${q.text}</div>
+        <div class="options-list" id="options-list">
+          ${q.options.map(opt => `
+            <button class="option-btn" data-val="${opt.value}" onclick="selectOption(this, '${opt.value}')">
+              <span class="option-indicator"></span>
+              ${opt.label}
+            </button>
+          `).join('')}
+        </div>
+        <div class="q-footer">
+          <button id="next-btn" class="next-btn" disabled onclick="submitAnswer('${q.id}')">
+            Continue
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  function selectOption(btn, val) {
+    document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedAnswer = val;
+    document.getElementById('next-btn').disabled = false;
+  }
+
+  async function submitAnswer(qid) {
+    if (!selectedAnswer) return;
+    showLoading();
+    document.getElementById('question-area').classList.add('hidden');
+
+    const res = await fetch('/api/answer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question_id: qid, answer: selectedAnswer })
+    });
+    const data = await res.json();
+    hideLoading();
+
+    if (data.done) {
+      document.getElementById('progress-wrap').classList.add('hidden');
+      showResults(data.diagnoses);
+    } else {
+      renderQuestion(data.question, data.progress);
+    }
+  }
+
+  function showResults(diagnoses) {
+    const area = document.getElementById('results-area');
+    area.classList.remove('hidden');
+    const sevLabel = { low: 'Low', medium: 'Medium', high: 'High', critical: 'Critical' };
+
+    const cards = diagnoses.map((d, i) => {
+      const isPrimary = i === 0;
+      return `
+        <div class="result-card ${isPrimary ? 'primary' : ''} fade-in" style="animation-delay:${i * 0.1}s">
+          <div class="result-card-top">
+            ${isPrimary ? '<div class="result-card-label">Decisive Diagnosis</div>' : ''}
+            <div class="result-card-header">
+              <div class="result-card-name">${d.label}</div>
+              <span class="sev-badge sev-${d.severity}">${sevLabel[d.severity]}</span>
+            </div>
+          </div>
+          <div class="result-desc">${d.description}</div>
+          <div class="conf-block">
+            <div class="conf-meta">
+              <span>Confidence</span>
+              <span>${d.confidence}%</span>
+            </div>
+            <div class="conf-track">
+              <div class="conf-fill" style="width:${d.confidence}%"></div>
+            </div>
+          </div>
+          <div class="fixes-block">
+            <div class="fixes-label">Recommended Actions</div>
+            ${d.fixes.map((f, fi) => `
+              <div class="fix-item">
+                <span class="fix-num">${String(fi + 1).padStart(2, '0')}</span>
+                <span class="fix-text">${f}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    area.innerHTML = `
+      <div class="fade-in">
+        <div class="result-header">
+          <div class="result-dot"></div>
+          <span class="result-title">Diagnosis Complete</span>
+        </div>
+        ${cards}
+        <button class="restart-btn" onclick="location.reload()">← Run New Diagnosis</button>
+        <p class="disclaimer">This is a diagnostic aid only. Always consult a qualified mechanic for safety-critical issues — especially brakes, steering, and anything marked Critical severity.</p>
+      </div>
+    `;
+  }
+
+  function showLoading() { document.getElementById('loading').classList.remove('hidden'); }
+  function hideLoading()  { document.getElementById('loading').classList.add('hidden'); }
+</script>
+</body>
+</html>
