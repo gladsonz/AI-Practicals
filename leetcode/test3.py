@@ -1,3 +1,3 @@
-decision_tree= {
-     ""
+graph={
+    'A': { 'b':3    }
 }
